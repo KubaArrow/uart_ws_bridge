@@ -1,9 +1,9 @@
 <launch>
     <node name="uwu_bridge" pkg="uart_ws_bridge" type="uwu_bridge" ns="uart_ws_bridge" output="screen">
-        <param name="master_ip" value="192.168.18.221" />
+        <param name="master_ip" value="192.168.18.59" />
         <param name="master_port" value="9090" />
         <param name="own_ip" value="192.168.18.59" />
-        <param name="uart_port" value="/dev/ttyUSB0"/>
+        <param name="uart_port" value="/dev/ttyACM0"/>
         <param name="twist_topic" value="/cmd_vel" />
         <param name="odom_topic" value="/low_level_odom" />
         <param name="imu_topic" value="/imu" />

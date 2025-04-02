@@ -588,7 +588,7 @@ SerialSlipError serial_slip_write(SerialSlip *ctx, const uint8_t *data, size_t l
 // W przypadku powodzenia kopiuje do bufora do bufferSize bajtów, ustawia *msgLen i zwraca SS_OK.
 SerialSlipError serial_slip_get_message(SerialSlip *ctx, uint8_t *buffer, size_t bufferSize, size_t *msgLen, unsigned long timeout)
 {
-    SS_LOG_DEBUG("Waiting for message | Timeout: %lu ms\n", timeout);
+//    SS_LOG_DEBUG("Waiting for message | Timeout: %lu ms\n", timeout);
     if (!serial_is_connected(ctx)) {
         SerialSlipError recon_err = attempt_reconnect(ctx);
         if (recon_err != SS_OK) {
@@ -611,7 +611,7 @@ SerialSlipError serial_slip_get_message(SerialSlip *ctx, uint8_t *buffer, size_t
         int ret = pthread_cond_timedwait(&ctx->msgCond, &ctx->queueLock, &ts);
         if (ret == ETIMEDOUT) {
             pthread_mutex_unlock(&ctx->queueLock);
-            SS_LOG_ERROR("Wait timeout\n");
+//            SS_LOG_ERROR("Wait timeout\n");
             return SS_ERR_GET_MSG_TIMEOUT;
         }
     }
