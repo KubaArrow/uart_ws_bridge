@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
     std::string master_ip, own_ip, uart_port;
     int master_port;
 
-    std::string twist_topic, odom_topic, imu_topic, magnet_topic, line_detector_topic;
+    std::string twist_topic, odom_topic, imu_topic, magnet_topic, line_detector_topic, leds_topic;
 
     nh.param<std::string>("master_ip", master_ip, "127.0.0.1");
     nh.param<int>("master_port", master_port, 9090);
@@ -33,6 +33,7 @@ int main(int argc, char *argv[])
     nh.param<std::string>("imu_topic", imu_topic, "/imu");
     nh.param<std::string>("magnet_topic", magnet_topic, "/magnet");
     nh.param<std::string>("line_detector_topic", line_detector_topic, "/line_detector");
+    nh.param<std::string>("leds_topic", leds_topic, "/leds");
 
     std::ostringstream host_stream, origin_stream;
     host_stream << master_ip << ":" << master_port;
@@ -41,12 +42,20 @@ int main(int argc, char *argv[])
     std::string host = host_stream.str();
     std::string origin = origin_stream.str();
 
-    SerialSlip *slip = serial_slip_open("COM9");
+    SerialSlip *slip = serial_slip_open(uart_port.c_str());
     uint8_t recvBuffer[8192];
     size_t recvLen = 0;
 
-    wsb_topic_t *cmd_vel = wsb_add_topic("/cmd_vel", NULL, WSB_TOPIC_SUBSCRIBE);
-    // Initialize the connection – parameters can be modified as needed
+    wsb_topic_t *odom = wsb_add_topic(odom_topic.c_str(), "nav_msgs/Odometry", WSB_TOPIC_PUBLISH);
+    wsb_topic_t *imu = wsb_add_topic(imu_topic.c_str(), "sensor_msgs/Imu", WSB_TOPIC_PUBLISH);
+    wsb_topic_t *magnet = wsb_add_topic(magnet_topic.c_str(), "std_msgs/Float64MultiArray", WSB_TOPIC_PUBLISH);
+    wsb_topic_t *line = wsb_add_topic(line_detector_topic.c_str(), "std_msgs/UInt16MultiArray", WSB_TOPIC_PUBLISH);
+
+
+    wsb_topic_t *cmd_vel = wsb_add_topic(twist_topic.c_str(), "geometry_msgs/Twist", WSB_TOPIC_SUBSCRIBE);
+    wsb_topic_t *leds = wsb_add_topic(leds_topic.c_str(), "std_msgs/ColorRGBA", WSB_TOPIC_SUBSCRIBE);
+
+
     if (wsb_init(master_ip.c_str(), master_port, host.c_str(), origin.c_str()) != 0)
     {
         return -1;

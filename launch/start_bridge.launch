@@ -9,5 +9,6 @@
         <param name="imu_topic" value="/imu" />
         <param name="magnet_topic" value="/magnet" />
         <param name="line_detector_topic" value="/line_detector" />
+        <param name="leds_topic" value="/leds"/>
     </node>
 </launch>
